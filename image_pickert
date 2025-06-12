@@ -1,0 +1,12 @@
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+Future<void> pickImage() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.camera);  // Usa anche `ImageSource.gallery` per la galleria
+
+  if (pickedFile != null) {
+    File image = File(pickedFile.path);
+    // Ora invia l'immagine al server
+  }
+}
