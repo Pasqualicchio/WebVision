@@ -198,4 +198,8 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+<<<<<<< HEAD
 >>>>>>> dbbfcd701fb4f952c1657e1c34830cfdadbda72b
+=======
+>>>>>>> dbbfcd701fb4f952c1657e1c34830cfdadbda72b
+>>>>>>> f30472cfb81394f9820c2c689742752daaa2cb31

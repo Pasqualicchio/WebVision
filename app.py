@@ -37,19 +37,21 @@ def upload_file():
         return jsonify({"message": "Nessun file inviato"}), 400
 
     file = request.files['file']
-
+    
     if file.filename == '':
         return jsonify({"message": "Nessun file selezionato"}), 400
 
     if not allowed_file(file.filename):
         return jsonify({"message": "Tipo di file non consentito"}), 400
 
-    # Crea la cartella se non esiste
+    # Crea la cartella di upload se non esiste
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+    # Salva il file
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
 
+    # Aggiorna il file Excel
     try:
         if os.path.exists(EXCEL_FILE):
             wb = load_workbook(EXCEL_FILE)
@@ -70,5 +72,11 @@ def upload_file():
 
 # 🚀 Avvio server compatibile con Render
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Render imposta automaticamente questa variabile
-    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
+    port = int(os.environ.get("PORT", 5000))  # Render imposta automaticamente la porta
+    app.run(
+        host='0.0.0.0',  # Accetta connessioni da qualunque IP
+        port=port,
+        debug=True,
+        use_reloader=False
+    )
+
