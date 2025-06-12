@@ -3,54 +3,53 @@ import os
 from datetime import datetime
 from openpyxl import Workbook, load_workbook
 
-# Crea l'app Flask
+# Inizializza l'app Flask
 app = Flask(__name__)
 
-# Configurazioni
+# Configurazione
 UPLOAD_FOLDER = 'static/uploads/'
 EXCEL_FILE = 'static/registro_foto.xlsx'
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif', 'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Funzione per verificare l'estensione del file
+# Verifica che il file abbia un'estensione consentita
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# ✅ Rotta di test (homepage)
+# 🏠 Homepage di test
 @app.route('/')
 def home():
-    return "✅ WebVision API è attiva!"
+    return "✅ WebVision API è attiva e funzionante!"
 
-# 🔐 Login base
+# 🔐 Login di base
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
-    if data['username'] == 'admin' and data['password'] == 'admin123':
+    if data.get('username') == 'admin' and data.get('password') == 'admin123':
         return jsonify({"message": "Login riuscito!"}), 200
     return jsonify({"message": "Credenziali non valide"}), 401
 
-# 📁 Upload dei file e aggiornamento Excel
+# 📤 Upload dei file + aggiornamento Excel
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         return jsonify({"message": "Nessun file inviato"}), 400
-    
+
     file = request.files['file']
-    
+
     if file.filename == '':
         return jsonify({"message": "Nessun file selezionato"}), 400
 
     if not allowed_file(file.filename):
         return jsonify({"message": "Tipo di file non consentito"}), 400
 
-    # Crea la cartella di upload se non esiste
+    # Crea la cartella se non esiste
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    
+
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
 
-    # Scrittura nel file Excel
     try:
         if os.path.exists(EXCEL_FILE):
             wb = load_workbook(EXCEL_FILE)
@@ -69,11 +68,7 @@ def upload_file():
 
     return jsonify({"message": f"✅ File '{file.filename}' caricato con successo!"}), 200
 
-# 🚀 Avvio server
+# 🚀 Avvio server compatibile con Render
 if __name__ == '__main__':
-    app.run(
-        debug=True,
-        host='0.0.0.0',
-        port=int(os.environ.get('PORT', 5000)),
-        use_reloader=False
-    )
+    port = int(os.environ.get("PORT", 5000))  # Render imposta automaticamente questa variabile
+    app.run(host='0.0.0.0', port=port, debug=True, use_reloader=False)
