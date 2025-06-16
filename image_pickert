@@ -9,4 +9,8 @@ Future<void> pickImage() async {
     File image = File(pickedFile.path);
     // Ora invia l'immagine al server
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f30472cfb81394f9820c2c689742752daaa2cb31
